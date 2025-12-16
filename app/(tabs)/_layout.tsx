@@ -3,7 +3,17 @@ import { ListChecks, Map, ScrollText } from "lucide-react-native";
 
 export default function TabLayout() {
     return (
-        <Tabs>
+        <Tabs screenOptions={{
+            tabBarStyle: {
+                height: 96,
+                paddingTop: 8,
+                borderTopWidth: 0,
+                elevation: 0,
+                shadowOpacity: 0,
+            },
+            headerTitleAlign: 'center',
+            headerShadowVisible: false
+        }}>
             <Tabs.Screen
                 name="lists_summary"
                 options={{
