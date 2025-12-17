@@ -18,7 +18,7 @@ export default function Tab() {
         getItems()
     }, [repository])
 
-    return <View>
+    return <View style={{ padding: 16 }}>
         <FlatList
             data={lists}
             renderItem={({item}) => <ShoppingListRow list={item}/>}

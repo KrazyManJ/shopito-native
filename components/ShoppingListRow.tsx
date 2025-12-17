@@ -25,10 +25,10 @@ const ShoppingListRow = ({ list }: ShoppingListRowProps) => {
                 })
             }}
         >
-            <LucideListTodo />
-            <View>
-                <Text>{list.name}</Text>
-                <Text>
+            <LucideListTodo size={32} color={theme.textPrimary}/>
+            <View style={styles.textContainer}>
+                <Text style={{...styles.title, color: theme.textPrimary}}>{list.name}</Text>
+                <Text style={{color: theme.textSecondary}}>
                     {list.description.length === 0
                         ? "No description provided"
                         : list.description}
@@ -44,7 +44,19 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         gap: 16,
         padding: 16,
+        borderRadius: 16,
+        alignItems: "center"
     },
+    textContainer: {
+        gap: 4
+    },
+    title: {
+        fontSize: 20,
+        fontWeight: "500"
+    },
+    description: {
+
+    }
 });
 
 export default ShoppingListRow;

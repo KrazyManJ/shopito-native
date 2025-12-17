@@ -1,6 +1,7 @@
 import { ShopitoThemeColors } from "@/constants/Theme";
 import { useRepository } from "@/context/repository-context";
 import useTheme from "@/hooks/useTheme";
+import * as Haptics from 'expo-haptics';
 import { LucideArrowUp } from "lucide-react-native";
 import React, { useState } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
@@ -30,6 +31,7 @@ const QuickAdd = ({ listId, onAdd }: QuickAddProps) => {
             name: value,
             amount: 1
         })
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
         if (onAdd) {
             onAdd()
         }
