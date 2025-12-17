@@ -1,6 +1,7 @@
 import { ShopitoThemeColors } from "@/constants/Theme";
 import { useRepository } from "@/context/repository-context";
 import useTheme from "@/hooks/useTheme";
+import { extractLastAmount } from "@/lib/extract-last-amount";
 import * as Haptics from 'expo-haptics';
 import { LucideArrowUp } from "lucide-react-native";
 import React, { useState } from "react";
@@ -27,9 +28,10 @@ const QuickAdd = ({ listId, onAdd }: QuickAddProps) => {
         if (!isEnabled) {
             return
         }
+        const { name, amount } = extractLastAmount(value)
         await repository.addItemToShoppingList(listId,{
-            name: value,
-            amount: 1
+            name: name,
+            amount: amount
         })
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
         if (onAdd) {
