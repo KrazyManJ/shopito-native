@@ -65,4 +65,8 @@ export default class ShopitoRepository {
             INSERT INTO shopping_items (listId, name, amount) VALUES (?, ?, ?);
         `, listId, item.name, item.amount)
     }
+
+    public async changeItemCheckState(id: number, state: boolean) {
+        await this.db.runAsync(`UPDATE shopping_items SET checked=? WHERE id=?`, state, id)
+    }
 }

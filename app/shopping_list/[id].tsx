@@ -32,6 +32,14 @@ export default function ShoppingListScreen() {
         setIsScroll(true)
     }
 
+    const checkItem = async (value: boolean,item: ShoppingItem) => {
+        if (!item.id) {
+            return
+        }
+        await repository.changeItemCheckState(item.id, value)
+        setItems(await repository.getShoppingItemsFromShoppingList(parseInt(idString))) 
+    }
+
     useEffect(() => {
         if (!repository) return
 
@@ -58,7 +66,7 @@ export default function ShoppingListScreen() {
         <FlatList
             ref={flatListRef}
             data={items}
-            renderItem={({item}) => <ShoppingItemRow item={item}/>}
+            renderItem={({item}) => <ShoppingItemRow item={item} onCheck={value => checkItem(value, item)}/>}
             keyExtractor={item => `${item.id}`}
         />
         <QuickAdd 

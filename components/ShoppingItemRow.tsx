@@ -5,9 +5,10 @@ import { StyleSheet, Text, View } from "react-native";
 
 export interface ShoppingItemRowProps {
     item: ShoppingItem;
+    onCheck?: (value: boolean) => void;
 }
 
-const ShoppingItemRow = ({ item }: ShoppingItemRowProps) => {
+const ShoppingItemRow = ({ item, onCheck }: ShoppingItemRowProps) => {
 
     const theme = useTheme()
 
@@ -24,7 +25,7 @@ const ShoppingItemRow = ({ item }: ShoppingItemRowProps) => {
 const styles = StyleSheet.create({
     item: {
         flexDirection: "row",
-        paddingHorizontal: 16,
+        paddingHorizontal: 32,
         paddingVertical: 8
     },
     name: {

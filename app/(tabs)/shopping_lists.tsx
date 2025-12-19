@@ -1,3 +1,4 @@
+import AddNewShoppingListRow from "@/components/AddNewShoppingListRow";
 import ShoppingListRow from "@/components/ShoppingListRow";
 import { useRepository } from "@/context/repository-context";
 import ShoppingList from "@/model/ShoppingList";
@@ -23,6 +24,8 @@ export default function Tab() {
             data={lists}
             renderItem={({item}) => <ShoppingListRow list={item}/>}
             keyExtractor={list => `${list.id}`}
+            ListHeaderComponent={ <AddNewShoppingListRow/> }
+            ItemSeparatorComponent={() => <View style={{height: 16}} />}
         />
     </View>;
 }
