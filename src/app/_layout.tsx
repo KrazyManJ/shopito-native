@@ -1,4 +1,4 @@
-import "../global.css";
+import "@/global.css";
 
 import { RepositoryProvider } from "@/context/repository-context";
 import useTheme from "@/hooks/useTheme";
