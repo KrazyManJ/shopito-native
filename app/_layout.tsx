@@ -1,3 +1,5 @@
+import "../global.css";
+
 import { RepositoryProvider } from "@/context/repository-context";
 import useTheme from "@/hooks/useTheme";
 import { DarkTheme, DefaultTheme, Theme, ThemeProvider } from "@react-navigation/native";
