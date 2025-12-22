@@ -1,8 +1,8 @@
-import { ShopitoColors } from "@/constants/Colors";
 import useShopitoColors from "@/hooks/useShopitoColors";
+import colorsToVars from "@/lib/colors-to-vars";
 import { DarkTheme, DefaultTheme, Theme, ThemeProvider } from "@react-navigation/native";
 import { setBackgroundColorAsync } from "expo-system-ui";
-import { useColorScheme, vars } from "nativewind";
+import { useColorScheme } from "nativewind";
 import { ReactNode, useEffect, useMemo } from "react";
 import { View } from "react-native";
 
@@ -31,15 +31,7 @@ const ShopitoThemeProvider = ({children}: ShopitoThemeProviderProps) => {
         }
     }
 
-    const varsStyles = useMemo(() => {
-        return Object.keys(colors).reduce<Record<string,string>>((acc, key) => {
-            const kebabKey = key.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase()
-
-            acc[`--color-${kebabKey}`] = colors[key as keyof ShopitoColors]
-
-            return acc
-        }, {})
-    }, [colors])
+    const varsStyles = useMemo(() => colorsToVars(colors), [colors])
 
     useEffect(() => {
         setBackgroundColorAsync(ShopitoTheme.colors.background);
@@ -47,7 +39,7 @@ const ShopitoThemeProvider = ({children}: ShopitoThemeProviderProps) => {
 
     return (
         <ThemeProvider value={ShopitoTheme}>
-            <View style={vars(varsStyles)} className="flex-1">
+            <View style={varsStyles} className="flex-1">
                 {children}
             </View>
         </ThemeProvider>
