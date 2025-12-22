@@ -1,12 +1,13 @@
-import { ShopitoThemeColors } from "@/constants/Theme";
 import { useRepository } from "@/context/repository-context";
-import useTheme from "@/hooks/useTheme";
+import useShopitoColors from "@/hooks/useShopitoColors";
 import { extractLastAmount } from "@/lib/extract-last-amount";
+import { cn } from "@/utils/cn";
 import * as Haptics from 'expo-haptics';
 import { LucideArrowUp } from "lucide-react-native";
 import React, { useState } from "react";
-import { StyleSheet, TextInput, View } from "react-native";
+import { TextInput, View } from "react-native";
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
+import Icon from "./Icon";
 
 
 interface QuickAddProps {
@@ -17,7 +18,7 @@ interface QuickAddProps {
 
 const QuickAdd = ({ listId, onAdd }: QuickAddProps) => {
 
-    const theme = useTheme()
+    const colors = useShopitoColors()
     const repository = useRepository()
 
     const [value, setValue] = useState("");
@@ -31,7 +32,8 @@ const QuickAdd = ({ listId, onAdd }: QuickAddProps) => {
         const { name, amount } = extractLastAmount(value)
         await repository.addItemToShoppingList(listId,{
             name: name,
-            amount: amount
+            amount: amount,
+            checked: false
         })
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
         if (onAdd) {
@@ -45,59 +47,34 @@ const QuickAdd = ({ listId, onAdd }: QuickAddProps) => {
             behavior={"padding"}
             keyboardVerticalOffset={100}
         >
-            <View style={{...styles.container, backgroundColor: theme.backgroundPrimary}}>
-                <View
-                    style={{
-                        borderBottomColor: theme.backgroundSecondary,
-                        borderBottomWidth: 2,
-                        borderRadius: 2
-                    }}
-                />
-                <View style={styles.textContainer}>
+            <View className="px-4 py-8 gap-4">
+                <View className="border-b-2 border-background-secondary rounded-full"/>
+                <View className="flex-row items-center gap-4">
                     <TextInput
-                        style={{...styles.textInput, color: theme.textPrimary}}
-                        placeholderTextColor={theme.textSecondary}
+                        className="flex-1 h-auto text-lg text-text-primary"
+                        placeholderTextColor={colors.textSecondary}
                         value={value}
                         onChangeText={setValue}
-                        cursorColor={theme.primary}
-                        selectionHandleColor={theme.primary}
+                        cursorColor={colors.primary}
+                        selectionHandleColor={colors.primary}
                         placeholder="Add new item..."
                     />
-                    <View 
-                        style={{...styles.sendButton, backgroundColor: isEnabled ? theme.primary : theme.backgroundSecondary}}
+                    <View
+                        className={cn(
+                            "size-12 rounded-full items-center justify-center",
+                            {
+                                "bg-primary": isEnabled,
+                                "bg-background-secondary": !isEnabled
+                            }
+                        )}
                         onTouchStart={createItem}
                     >
-                        <LucideArrowUp color={ShopitoThemeColors.dark.textPrimary}/>
+                        <Icon icon={LucideArrowUp} className="text-text-primary"/>
                     </View>
                 </View>
             </View>
         </KeyboardAvoidingView>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        paddingHorizontal: 16,
-        paddingVertical: 32,
-        gap: 16
-    },
-    textContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 16
-    },
-    textInput: {
-        flexGrow: 1,
-        height: "auto",
-        fontSize: 16
-    },
-    sendButton: {
-        width: 48,
-        height: 48,
-        borderRadius: 9999,
-        alignItems: "center",
-        justifyContent: "center",
-    }
-})
 
 export default QuickAdd;

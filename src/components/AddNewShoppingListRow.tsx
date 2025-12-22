@@ -1,28 +1,14 @@
-import useTheme from "@/hooks/useTheme";
 import { LucidePlus } from "lucide-react-native";
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
+import Icon from "./Icon";
 
 
 const AddNewShoppingListRow = () => {
-
-    const theme = useTheme()
-
-    return <View style={{...styles.container, borderColor: theme.textSecondary}}>
-        <LucidePlus color={theme.textSecondary} size={48}/>
-        <Text style={{color: theme.textSecondary}}>Create new list</Text>
+    return <View className="flex-1 border-4 items-center p-2 rounded-2xl border-text-secondary border-dashed mb-4">
+        <Icon icon={LucidePlus} className="text-text-secondary size-12"/>
+        <Text className="text-text-secondary">Create new list</Text>
     </View>
 };
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        borderWidth: 3,
-        alignItems: "center",
-        padding: 8,
-        borderRadius: 16,
-        borderStyle: "dashed",
-        marginBottom: 16
-    }
-})
 
 export default AddNewShoppingListRow;

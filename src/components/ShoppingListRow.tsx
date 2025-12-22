@@ -1,8 +1,9 @@
-import useTheme from "@/hooks/useTheme";
 import ShoppingList from "@/model/ShoppingList";
 import { useRouter } from "expo-router";
 import { LucideListTodo } from "lucide-react-native";
-import { StyleSheet, Text, View } from "react-native";
+import React from "react";
+import { Text, View } from "react-native";
+import Icon from "./Icon";
 
 interface ShoppingListRowProps {
     list: ShoppingList;
@@ -11,13 +12,9 @@ interface ShoppingListRowProps {
 const ShoppingListRow = ({ list }: ShoppingListRowProps) => {
     const router = useRouter();
 
-    const theme = useTheme();
-
-    const backgroundColor = theme.backgroundSecondary;
-
     return (
-        <View 
-            style={{ ...styles.container, backgroundColor }}
+        <View
+            className="flex-1 flex-row gap-4 p-4 rounded-2xl items-center bg-background-secondary"
             onTouchStart={() => {
                 router.navigate({
                     pathname: "/shopping_list/[id]",
@@ -25,10 +22,10 @@ const ShoppingListRow = ({ list }: ShoppingListRowProps) => {
                 })
             }}
         >
-            <LucideListTodo size={32} color={theme.textPrimary}/>
-            <View style={styles.textContainer}>
-                <Text style={{...styles.title, color: theme.textPrimary}}>{list.name}</Text>
-                <Text style={{color: theme.textSecondary}}>
+            <Icon icon={LucideListTodo} className="size-10 text-text-primary"/>
+            <View className="gap-1">
+                <Text className="text-xl font-medium text-text-primary">{list.name}</Text>
+                <Text className="text-text-secondary">
                     {list.description.length === 0
                         ? "No description provided"
                         : list.description}
@@ -37,26 +34,5 @@ const ShoppingListRow = ({ list }: ShoppingListRowProps) => {
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: "row",
-        gap: 16,
-        padding: 16,
-        borderRadius: 16,
-        alignItems: "center"
-    },
-    textContainer: {
-        gap: 4
-    },
-    title: {
-        fontSize: 20,
-        fontWeight: "500"
-    },
-    description: {
-
-    }
-});
 
 export default ShoppingListRow;

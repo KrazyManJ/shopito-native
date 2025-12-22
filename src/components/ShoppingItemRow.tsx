@@ -1,7 +1,6 @@
-import useTheme from "@/hooks/useTheme";
 import ShoppingItem from "@/model/ShoppingItem";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 
 export interface ShoppingItemRowProps {
     item: ShoppingItem;
@@ -9,32 +8,12 @@ export interface ShoppingItemRowProps {
 }
 
 const ShoppingItemRow = ({ item, onCheck }: ShoppingItemRowProps) => {
-
-    const theme = useTheme()
-
-    const color = theme.textPrimary
-
     return (
-        <View style={styles.item}>
-            <Text style={{...styles.name, color}}>{item.name}</Text>
-            <Text style={{...styles.amount, color}}>{item.amount}</Text>
+        <View className="flex-row px-8 py-2">
+            <Text className="flex-1 text-xl text-text-primary">{item.name}</Text>
+            <Text className="text-xl text-text-primary">{item.amount}</Text>
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    item: {
-        flexDirection: "row",
-        paddingHorizontal: 32,
-        paddingVertical: 8
-    },
-    name: {
-        flex: 1,
-        fontSize: 20,
-    },
-    amount: {
-        fontSize: 20,
-    }
-});
 
 export default ShoppingItemRow;

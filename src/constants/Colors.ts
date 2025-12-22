@@ -1,7 +1,5 @@
 import { ArrayToObject, Prettify } from "@/types";
 
-
-
 export type ShopitoColors = Prettify<ArrayToObject<[
     "primary", 
     "backgroundPrimary", 
@@ -11,7 +9,7 @@ export type ShopitoColors = Prettify<ArrayToObject<[
     "unused",
 ]>>
 
-export const ShopitoThemeColors: { light: ShopitoColors; dark: ShopitoColors } = {
+export const Colors: { light: ShopitoColors; dark: ShopitoColors } = {
     light: {
         primary: "#D53A3A",
         textPrimary: "#2A2A2A",
