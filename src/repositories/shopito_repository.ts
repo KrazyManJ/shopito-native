@@ -69,4 +69,8 @@ export default class ShopitoRepository {
     public async changeItemCheckState(id: number, state: boolean) {
         await this.db.runAsync(`UPDATE shopping_items SET checked=? WHERE id=?`, state, id)
     }
+
+    public async getShoppingItemById(id: number) {
+        return await this.db.getFirstAsync<ShoppingItem>(`SELECT * FROM shopping_items WHERE id=?`, id)
+    }
 }
