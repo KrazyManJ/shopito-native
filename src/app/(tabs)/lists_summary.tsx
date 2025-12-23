@@ -18,7 +18,7 @@ export default function Tab() {
 
     useFocusEffect(() => { updateItems() })
 
-    return <View>
+    return <View className="p-8">
         <FlatList
             data={items}
             renderItem={({item}) => <ShoppingItemRow item={item} onUpdate={updateItems}/>}
