@@ -3,7 +3,7 @@ import ShoppingItemRow from "@/components/ShoppingItemRow";
 import { useRepository } from "@/context/repository-context";
 import ShoppingItem from "@/model/ShoppingItem";
 import ShoppingList from "@/model/ShoppingList";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Stack, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { FlatList, View } from "react-native";
 
@@ -27,20 +27,16 @@ export default function ShoppingListScreen() {
         setIsScroll(false)
     }, [isScroll])
     
-    const fetchItemsWithScroll = async () => {
-        setItems(await repository.getShoppingItemsFromShoppingList(parseInt(idString)))
-        setIsScroll(true)
-    }
-
-    const checkItem = async (value: boolean,item: ShoppingItem) => {
-        if (!item.id) {
-            return
-        }
-        await repository.changeItemCheckState(item.id, value)
+    const fetchItems = async () => {
         setItems(await repository.getShoppingItemsFromShoppingList(parseInt(idString))) 
     }
 
-    useEffect(() => {
+    const fetchItemsWithScroll = async () => {
+        fetchItems()
+        setIsScroll(true)
+    }
+
+    useFocusEffect(() => {
         if (!repository) return
 
         (async () => {
@@ -52,9 +48,9 @@ export default function ShoppingListScreen() {
                 return
             }
             setList(list)
-            setItems(await repository.getShoppingItemsFromShoppingList(id)) 
+            fetchItems()
         })()
-    }, [repository, idString])
+    })
 
     return <View style={{flex: 1}}>
         <Stack.Screen 
@@ -66,7 +62,7 @@ export default function ShoppingListScreen() {
         <FlatList
             ref={flatListRef}
             data={items}
-            renderItem={({item}) => <ShoppingItemRow item={item} onCheck={value => checkItem(value, item)}/>}
+            renderItem={({item}) => <ShoppingItemRow item={item} onUpdate={fetchItems}/>}
             keyExtractor={item => `${item.id}`}
         />
         <QuickAdd 

@@ -1,7 +1,8 @@
 import ShoppingItemRow from "@/components/ShoppingItemRow";
 import { useRepository } from "@/context/repository-context";
 import ShoppingItem from "@/model/ShoppingItem";
-import { useEffect, useState } from "react";
+import { useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
 import { FlatList, View } from "react-native";
 
 export default function Tab() {
@@ -11,18 +12,16 @@ export default function Tab() {
     const [items, setItems] = useState<ShoppingItem[]>([])
     
 
-    useEffect(() => {
-        if (!repository) return
-
-        const getItems = async () => setItems(await repository.getAllShoppingItems()) 
-
-        getItems()
+    const updateItems = useCallback(async () => {
+        setItems(await repository.getAllShoppingItems())
     }, [repository])
+
+    useFocusEffect(() => { updateItems() })
 
     return <View>
         <FlatList
             data={items}
-            renderItem={({item}) => <ShoppingItemRow item={item}/>}
+            renderItem={({item}) => <ShoppingItemRow item={item} onUpdate={updateItems}/>}
             keyExtractor={item => `${item.id}`}
         />
     </View>;

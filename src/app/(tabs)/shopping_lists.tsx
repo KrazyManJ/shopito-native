@@ -2,7 +2,8 @@ import AddNewShoppingListRow from "@/components/AddNewShoppingListRow";
 import ShoppingListRow from "@/components/ShoppingListRow";
 import { useRepository } from "@/context/repository-context";
 import ShoppingList from "@/model/ShoppingList";
-import { useEffect, useState } from "react";
+import { useFocusEffect } from "expo-router";
+import { useState } from "react";
 import { FlatList, View } from "react-native";
 
 export default function Tab() {
@@ -11,13 +12,13 @@ export default function Tab() {
 
     const [lists, setItems] = useState<ShoppingList[]>([])
 
-    useEffect(() => {
+    useFocusEffect(() => {
         if (!repository) return
 
         const getItems = async () => setItems(await repository.getAllShoppingLists()) 
 
         getItems()
-    }, [repository])
+    })
 
     return <View className="p-4 flex">
         <FlatList

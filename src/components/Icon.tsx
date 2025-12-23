@@ -6,18 +6,23 @@ interface IconProps extends LucideProps {
     icon: LucideIcon
 }
 
+const interopCache = new WeakSet<LucideIcon>();
+
 const Icon = ({icon: IconComponent, ...props}: IconProps) => {
-    cssInterop(IconComponent, {
-        className: {
-            target: "style",
-            nativeStyleToProp: {
-                color: true,
-                opacity: true,
-                width: true,
-                height: true
+    if (!interopCache.has(IconComponent)) {
+        cssInterop(IconComponent, {
+            className: {
+                target: "style",
+                nativeStyleToProp: {
+                    color: true,
+                    opacity: true,
+                    width: true,
+                    height: true
+                }
             }
-        }
-    });
+        });
+        interopCache.add(IconComponent);
+    }
     
     return <IconComponent {...props} />;
 };

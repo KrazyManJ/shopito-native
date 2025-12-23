@@ -1,11 +1,11 @@
 import ShoppingItemModalView from '@/components/ShoppingItemModalView';
 import useShopitoColors from '@/hooks/useShopitoColors';
 import BottomSheet, { BottomSheetBackdrop } from '@gorhom/bottom-sheet';
-import { createContext, ReactNode, useContext, useEffect, useRef, useState } from "react";
+import { createContext, ReactNode, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 interface ShoppingItemModalContextValue {
-    show(id: number): void
+    show(id: number, onClosed?: () => void): void
     hide(): void
 }
 
@@ -15,9 +15,9 @@ export const ShoppingItemModalContextProvider = ({children}: {children: ReactNod
 
     const [id, setId] = useState<number | null>(null);
     const colors = useShopitoColors();
-
+    
+    const onClosedCallbackRef = useRef<(() => void)>(undefined);
     const bottomSheetRef = useRef<BottomSheet>(null);
-    // const snapPoints = useMemo(() => ['25%', '50%'], []);
 
     useEffect(() => {
         if (id) {
@@ -28,9 +28,26 @@ export const ShoppingItemModalContextProvider = ({children}: {children: ReactNod
         }
     }, [id])
 
+    const handleSheetClose = () => {
+        setId(null);
+        if (onClosedCallbackRef.current) {
+            onClosedCallbackRef.current();
+            onClosedCallbackRef.current = undefined;
+        }
+    }
+
+
+    const modalContent = useMemo(() => {
+        if (!id) return null;
+        return <ShoppingItemModalView id={id} onHideRequest={() => setId(null)}/>
+    }, [id])
+
     return (
         <ShoppingItemModalContext.Provider value={{
-            show: (id) => setId(id),
+            show: (id, onClosed) => {
+                setId(id)
+                onClosedCallbackRef.current = onClosed;
+            },
             hide: () => setId(null)
         }}>
             <GestureHandlerRootView style={{ flex: 1 }}>
@@ -39,9 +56,8 @@ export const ShoppingItemModalContextProvider = ({children}: {children: ReactNod
                     ref={bottomSheetRef}
                     index={-1}
                     enableDynamicSizing={true}
-                    // snapPoints={snapPoints}
                     enablePanDownToClose={true}
-                    onClose={() => setId(null)}
+                    onClose={handleSheetClose}
                     backdropComponent={(props: any) => <BottomSheetBackdrop
                         {...props}
                         disappearsOnIndex={-1}
@@ -50,8 +66,10 @@ export const ShoppingItemModalContextProvider = ({children}: {children: ReactNod
                     />}
                     backgroundStyle={{ backgroundColor: colors.backgroundPrimary }}
                     handleIndicatorStyle={{ backgroundColor: colors.textSecondary }}
+                    keyboardBehavior="interactive"
+                    keyboardBlurBehavior="restore"
                 >
-                    {id && <ShoppingItemModalView id={id}/>}
+                    {modalContent}
                 </BottomSheet>
             </GestureHandlerRootView>
         </ShoppingItemModalContext.Provider>

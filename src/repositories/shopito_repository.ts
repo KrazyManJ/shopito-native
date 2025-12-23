@@ -73,4 +73,13 @@ export default class ShopitoRepository {
     public async getShoppingItemById(id: number) {
         return await this.db.getFirstAsync<ShoppingItem>(`SELECT * FROM shopping_items WHERE id=?`, id)
     }
+
+    public async updateShoppingItem(newItem: ShoppingItem) {
+        if (!newItem.id) return
+        await this.db.runAsync(`UPDATE shopping_items SET name=?, amount=?, checked=? WHERE id=?`, newItem.name, newItem.amount, newItem.checked, newItem.id)
+    }
+
+    public async deleteShoppingItem(id: number) {
+        await this.db.runAsync(`DELETE FROM shopping_items WHERE id=?`, id)
+    }
 }
