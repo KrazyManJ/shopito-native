@@ -58,6 +58,9 @@ const QuickAdd = ({ listId, onAdd }: QuickAddProps) => {
                         cursorColor={colors.primary}
                         selectionHandleColor={colors.primary}
                         placeholder="Add new item..."
+                        returnKeyType="send"
+                        onSubmitEditing={createItem}
+                        submitBehavior="submit"
                     />
                     <View
                         className={cn(
