@@ -9,7 +9,7 @@ export default function Tab() {
     return <View className="p-8">
         <FlatList
             data={items}
-            renderItem={({item}) => <ShoppingItemRow item={item}/>}
+            renderItem={({item}) => <ShoppingItemRow item={item} showListNavigation/>}
             keyExtractor={item => `${item.id}`}
         />
     </View>;

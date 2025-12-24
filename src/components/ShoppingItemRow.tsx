@@ -13,9 +13,10 @@ import Icon from "./Icon";
 
 export interface ShoppingItemRowProps {
     item: ShoppingItem;
+    showListNavigation?: boolean
 }
 
-const ShoppingItemRow = ({ item }: ShoppingItemRowProps) => {
+const ShoppingItemRow = ({ item, showListNavigation = false }: ShoppingItemRowProps) => {
 
     const { show } = useShoppingItemModalContext()
 
@@ -25,7 +26,9 @@ const ShoppingItemRow = ({ item }: ShoppingItemRowProps) => {
 
     const handlePress = () => {
         if (item.id) {
-            show(item.id)
+            show(item.id, {
+                showNavigationLink: showListNavigation
+            })
         }
     }
 

@@ -4,8 +4,13 @@ import BottomSheet, { BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import { createContext, ReactNode, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
+interface ShowModalOptions {
+    showNavigationLink?: boolean
+    onClosed?: () => void
+}
+
 interface ShoppingItemModalContextValue {
-    show(id: number, onClosed?: () => void): void
+    show(id: number, options?: ShowModalOptions): void
     hide(): void
 }
 
@@ -16,7 +21,8 @@ export const ShoppingItemModalContextProvider = ({children}: {children: ReactNod
     const [id, setId] = useState<number | null>(null);
     const colors = useShopitoColors();
     
-    const onClosedCallbackRef = useRef<(() => void)>(undefined);
+    // const onClosedCallbackRef = useRef<(() => void)>(undefined);
+    const showOptions = useRef<ShowModalOptions>(undefined)
     const bottomSheetRef = useRef<BottomSheet>(null);
 
     useEffect(() => {
@@ -30,23 +36,27 @@ export const ShoppingItemModalContextProvider = ({children}: {children: ReactNod
 
     const handleSheetClose = () => {
         setId(null);
-        if (onClosedCallbackRef.current) {
-            onClosedCallbackRef.current();
-            onClosedCallbackRef.current = undefined;
+        if (showOptions.current?.onClosed) {
+            showOptions.current?.onClosed();
+            showOptions.current = undefined;
         }
     }
 
 
     const modalContent = useMemo(() => {
         if (!id) return null;
-        return <ShoppingItemModalView id={id} onHideRequest={() => setId(null)}/>
+        return <ShoppingItemModalView 
+            id={id} 
+            onHideRequest={() => setId(null)}
+            showListNavigation={showOptions.current?.showNavigationLink}
+        />
     }, [id])
 
     return (
         <ShoppingItemModalContext.Provider value={{
-            show: (id, onClosed) => {
+            show: (id, options) => {
                 setId(id)
-                onClosedCallbackRef.current = onClosed;
+                showOptions.current = options
             },
             hide: () => setId(null)
         }}>
