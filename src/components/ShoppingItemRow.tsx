@@ -5,7 +5,7 @@ import ShoppingItem from "@/model/ShoppingItem";
 import { cn } from "@/utils/cn";
 import { LucideCheck, LucideTrash2 } from "lucide-react-native";
 import React from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, Text, TouchableHighlight, View } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import Animated, { SharedValue, useAnimatedStyle } from "react-native-reanimated";
@@ -13,10 +13,9 @@ import Icon from "./Icon";
 
 export interface ShoppingItemRowProps {
     item: ShoppingItem;
-    onUpdate?: () => void;
 }
 
-const ShoppingItemRow = ({ item, onUpdate }: ShoppingItemRowProps) => {
+const ShoppingItemRow = ({ item }: ShoppingItemRowProps) => {
 
     const { show } = useShoppingItemModalContext()
 
@@ -26,7 +25,7 @@ const ShoppingItemRow = ({ item, onUpdate }: ShoppingItemRowProps) => {
 
     const handlePress = () => {
         if (item.id) {
-            show(item.id, onUpdate)
+            show(item.id)
         }
     }
 
@@ -34,14 +33,12 @@ const ShoppingItemRow = ({ item, onUpdate }: ShoppingItemRowProps) => {
         (async () => {
             if (!item.id) return;
             await repository.changeItemCheckState(item.id, state)
-            onUpdate?.()
         })()
     }
 
     const handleDelete = async () => {
         if (!item.id) return;
         await repository.deleteShoppingItem(item.id);
-        onUpdate?.();
     };
 
     const RightActions = (
@@ -58,7 +55,7 @@ const ShoppingItemRow = ({ item, onUpdate }: ShoppingItemRowProps) => {
             <Animated.View style={styleAnimation}>
                 <Pressable
                     onPress={handleDelete}
-                    className="bg-red-500 justify-center items-center px-6 h-full rounded-r-xl"
+                    className="bg-primary justify-center items-center px-6 h-full rounded-r-xl"
                 >
                     <Icon icon={LucideTrash2} className="size-6 text-white" />
                 </Pressable>
@@ -72,7 +69,12 @@ const ShoppingItemRow = ({ item, onUpdate }: ShoppingItemRowProps) => {
             overshootRight={false}
             rightThreshold={40}
         >
-            <Pressable onPress={handlePress}>
+            <TouchableHighlight 
+                onPress={handlePress}
+                underlayColor={colors.backgroundSecondary}
+                className="rounded-xl"
+                activeOpacity={0.7}
+            >
                 <View className="flex-row p-2 items-center gap-4">
                     <Text className="flex-1 text-xl text-text-primary">{item.name}</Text>
                     <Text className="text-xl text-text-primary">{item.amount}x</Text>
@@ -91,7 +93,7 @@ const ShoppingItemRow = ({ item, onUpdate }: ShoppingItemRowProps) => {
                         }
                     />
                 </View>
-            </Pressable>
+            </TouchableHighlight>
         </Swipeable>
     );
 };

@@ -2,8 +2,13 @@ import ShoppingItem from "@/model/ShoppingItem";
 import ShoppingList from "@/model/ShoppingList";
 import { SQLiteDatabase } from "expo-sqlite";
 
+type DatabaseTable = "shopping_lists" | "shopping_items"
+
+type DatabaseChangeListener = (table: DatabaseTable) => void
 
 export default class ShopitoRepository {
+
+    private readonly listeners: DatabaseChangeListener[] = [];
 
     constructor(private db: SQLiteDatabase) {}
 
@@ -44,6 +49,23 @@ export default class ShopitoRepository {
         }
     }
 
+    /**
+     * Registers listeners for update of table
+     * @param listener 
+     * @returns Callback to unregister listener
+     */
+    public onChange(listener: DatabaseChangeListener) {
+        this.listeners.push(listener);
+
+        return () => {
+            this.listeners.splice(this.listeners.indexOf(listener))
+        }
+    }
+
+    private notifyChange(table: DatabaseTable) {
+        this.listeners.forEach(listener => listener(table))
+    }
+
     public async getAllShoppingLists() {
         return await this.db.getAllAsync<ShoppingList>("SELECT * FROM shopping_lists")
     }
@@ -64,22 +86,26 @@ export default class ShopitoRepository {
         await this.db.runAsync(`
             INSERT INTO shopping_items (listId, name, amount) VALUES (?, ?, ?);
         `, listId, item.name, item.amount)
+        this.notifyChange("shopping_items")
     }
-
+    
     public async changeItemCheckState(id: number, state: boolean) {
         await this.db.runAsync(`UPDATE shopping_items SET checked=? WHERE id=?`, state, id)
+        this.notifyChange("shopping_items")
     }
-
+    
     public async getShoppingItemById(id: number) {
         return await this.db.getFirstAsync<ShoppingItem>(`SELECT * FROM shopping_items WHERE id=?`, id)
     }
-
+    
     public async updateShoppingItem(newItem: ShoppingItem) {
         if (!newItem.id) return
         await this.db.runAsync(`UPDATE shopping_items SET name=?, amount=?, checked=? WHERE id=?`, newItem.name, newItem.amount, newItem.checked, newItem.id)
+        this.notifyChange("shopping_items")
     }
-
+    
     public async deleteShoppingItem(id: number) {
         await this.db.runAsync(`DELETE FROM shopping_items WHERE id=?`, id)
+        this.notifyChange("shopping_items")
     }
 }
